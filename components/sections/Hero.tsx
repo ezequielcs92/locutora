@@ -3,7 +3,7 @@
 import { useLenis } from "lenis/react";
 import { ChevronDown, Pause, Play, Radio } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { siteConfig } from "@/lib/site-config";
 import type { PublicDemo } from "@/lib/types";
@@ -168,10 +168,22 @@ function HeroDemoPanel({ demo }: { demo?: PublicDemo }) {
   );
 }
 
-export default function Hero({ featuredDemo }: { featuredDemo?: PublicDemo }) {
+function pickRandomDemo(demos: PublicDemo[]): PublicDemo | undefined {
+  if (!demos.length) return undefined;
+  return demos[Math.floor(Math.random() * demos.length)];
+}
+
+export default function Hero({ featuredDemos }: { featuredDemos: PublicDemo[] }) {
   const ref = useRef<HTMLElement>(null);
   const lenis = useLenis();
   const reduced = useReducedMotion();
+  const [featuredDemo, setFeaturedDemo] = useState<PublicDemo | undefined>(
+    () => featuredDemos[0]
+  );
+
+  useEffect(() => {
+    setFeaturedDemo(pickRandomDemo(featuredDemos));
+  }, [featuredDemos]);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -201,7 +213,7 @@ export default function Hero({ featuredDemo }: { featuredDemo?: PublicDemo }) {
       />
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(217,161,84,0.18),transparent_48%),linear-gradient(180deg,rgba(14,12,9,0)_0%,#0e0c09_94%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(217,161,84,0.08),transparent_48%),linear-gradient(180deg,rgba(14,12,9,0.18)_0%,rgba(14,12,9,0.55)_94%)]"
       />
       <motion.div
         aria-hidden
@@ -268,9 +280,6 @@ export default function Hero({ featuredDemo }: { featuredDemo?: PublicDemo }) {
             >
               Escuchá mis demos
             </MagneticButton>
-            <span className="rounded-full border border-cream/10 bg-cream/[0.03] px-5 py-3 text-sm text-muted backdrop-blur">
-              Entregas en hasta 48h
-            </span>
           </motion.div>
         </div>
 

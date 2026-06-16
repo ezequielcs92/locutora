@@ -1,3 +1,4 @@
+import AmbientBackground from "@/components/layout/AmbientBackground";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import GlobalAudio from "@/components/player/GlobalAudio";
@@ -38,17 +39,24 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Navbar />
-      <main>
-        <Hero featuredDemo={demos[0]} />
-        <Demos demos={demos} categories={categories} />
-        <Trabajos videos={videos} />
-        <Sobre />
-        <Contacto />
-      </main>
-      <Footer />
-      <MiniPlayer />
-      <GlobalAudio />
+      <div className="relative isolate min-h-screen overflow-x-clip">
+        <AmbientBackground />
+        <div className="relative z-10">
+          <Navbar />
+        </div>
+        <main className="relative z-10">
+          <Hero featuredDemos={demos} />
+          <Demos demos={demos} categories={categories} />
+          <Trabajos videos={videos} />
+          <Sobre />
+          <Contacto />
+        </main>
+        <div className="relative z-10">
+          <Footer />
+          <MiniPlayer />
+          <GlobalAudio />
+        </div>
+      </div>
     </LenisProvider>
   );
 }
