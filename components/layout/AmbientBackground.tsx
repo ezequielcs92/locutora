@@ -63,13 +63,13 @@ export default function AmbientBackground() {
       data-testid="ambient-background"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-bg"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_52%_18%,rgba(217,161,84,0.16),transparent_44%),linear-gradient(180deg,rgba(14,12,9,0.14)_0%,rgba(14,12,9,0.44)_72%,#0e0c09_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_52%_18%,rgb(184_131_46/0.10),transparent_44%),linear-gradient(180deg,rgb(26_23_20/0.04)_0%,rgb(26_23_20/0.12)_72%,var(--color-bg)_100%)] dark:bg-[radial-gradient(ellipse_at_52%_18%,rgba(217,161,84,0.16),transparent_44%),linear-gradient(180deg,rgba(14,12,9,0.14)_0%,rgba(14,12,9,0.44)_72%,#0e0c09_100%)]" />
 
       <motion.div
-        className="absolute inset-0 opacity-[0.26]"
+        className="absolute inset-0 opacity-[0.12] dark:opacity-[0.26]"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(90deg, transparent 0 2.4rem, rgba(236,190,122,0.16) 2.4rem calc(2.4rem + 1px), transparent calc(2.4rem + 1px) 4.8rem)",
+            "repeating-linear-gradient(90deg, transparent 0 2.4rem, rgb(184 131 46 / 0.12) 2.4rem calc(2.4rem + 1px), transparent calc(2.4rem + 1px) 4.8rem)",
           maskImage:
             "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
           WebkitMaskImage:
@@ -173,20 +173,20 @@ export default function AmbientBackground() {
       </svg>
 
       <motion.div
-        className="absolute inset-y-0 left-[-20%] w-[42%] skew-x-[-14deg] bg-[linear-gradient(90deg,transparent,rgba(236,190,122,0.16),transparent)]"
+        className="absolute inset-y-0 left-[-20%] w-[42%] skew-x-[-14deg] bg-[linear-gradient(90deg,transparent,rgb(184_131_46/0.08),transparent)] dark:bg-[linear-gradient(90deg,transparent,rgba(236,190,122,0.16),transparent)]"
         animate={reduced ? undefined : { x: ["0%", "330%", "0%"], opacity: [0, 0.42, 0] }}
         transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
       />
 
       <div
-        className="absolute inset-0 opacity-[0.05]"
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 1px 1px, rgba(244,237,227,0.72) 1px, transparent 0)",
+            "radial-gradient(circle at 1px 1px, rgb(26 23 20 / 0.4) 1px, transparent 0)",
           backgroundSize: "34px 34px",
         }}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,12,9,0.08)_0%,rgba(14,12,9,0.38)_55%,rgba(14,12,9,0.88)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(26_23_20/0.02)_0%,rgb(26_23_20/0.08)_55%,rgb(26_23_20/0.18)_100%)] dark:bg-[linear-gradient(180deg,rgba(14,12,9,0.08)_0%,rgba(14,12,9,0.38)_55%,rgba(14,12,9,0.88)_100%)]" />
     </div>
   );
 }

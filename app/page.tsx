@@ -41,7 +41,7 @@ export default async function Home() {
       />
       <div className="relative isolate min-h-screen overflow-x-clip">
         <AmbientBackground />
-        <div className="relative z-10">
+        <div className="relative z-40">
           <Navbar />
         </div>
         <main className="relative z-10">

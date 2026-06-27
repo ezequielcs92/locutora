@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Sora } from "next/font/google";
 import MotionProvider from "@/components/providers/MotionProvider";
+import ThemeProvider from "@/components/providers/ThemeProvider";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -43,9 +44,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR">
+    <html lang="es-AR" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`,
+          }}
+        />
+      </head>
       <body className={`${sora.variable} ${fraunces.variable} antialiased`}>
-        <MotionProvider>{children}</MotionProvider>
+        <ThemeProvider>
+          <MotionProvider>{children}</MotionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

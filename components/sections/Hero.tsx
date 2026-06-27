@@ -85,8 +85,8 @@ function HeroDemoPanel({ demo }: { demo?: PublicDemo }) {
         animate={reduced ? undefined : { rotate: [-3, 2, -3], scale: [1, 1.03, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-cream/10 bg-surface/80 p-5 shadow-[0_30px_120px_-45px_rgba(217,161,84,0.65)] backdrop-blur-xl sm:p-6">
-        <div className="absolute inset-0 bg-[linear-gradient(125deg,rgba(244,237,227,0.08),transparent_42%,rgba(217,161,84,0.16))]" />
+      <div className="relative overflow-hidden rounded-[1.75rem] border border-cream/10 bg-surface/80 p-5 shadow-[0_30px_120px_-45px_rgb(184_131_46/0.35)] backdrop-blur-xl sm:p-6 dark:shadow-[0_30px_120px_-45px_rgba(217,161,84,0.65)]">
+        <div className="absolute inset-0 bg-[linear-gradient(125deg,rgb(184_131_46/0.06),transparent_42%,rgb(184_131_46/0.10))] dark:bg-[linear-gradient(125deg,rgba(244,237,227,0.08),transparent_42%,rgba(217,161,84,0.16))]" />
         <div className="relative flex items-center justify-between gap-4">
           <span className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
             <Radio size={14} />
@@ -213,7 +213,7 @@ export default function Hero({ featuredDemos }: { featuredDemos: PublicDemo[] })
       />
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(217,161,84,0.08),transparent_48%),linear-gradient(180deg,rgba(14,12,9,0.18)_0%,rgba(14,12,9,0.55)_94%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgb(184_131_46/0.06),transparent_48%),linear-gradient(180deg,rgb(26_23_20/0.04)_0%,rgb(26_23_20/0.12)_94%)] dark:bg-[radial-gradient(ellipse_at_50%_0%,rgba(217,161,84,0.08),transparent_48%),linear-gradient(180deg,rgba(14,12,9,0.18)_0%,rgba(14,12,9,0.55)_94%)]"
       />
       <motion.div
         aria-hidden

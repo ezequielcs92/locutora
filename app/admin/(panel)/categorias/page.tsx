@@ -1,10 +1,20 @@
+import AdminConfigError from "@/components/admin/AdminConfigError";
 import CategoriesManager, { type AdminCategory } from "@/components/admin/CategoriesManager";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const metadata = { title: "Categorías — Admin" };
 
 export default async function AdminCategoriasPage() {
-  const supabase = await createClient();
+  let supabase: ReturnType<typeof createAdminClient>;
+  try {
+    supabase = createAdminClient();
+  } catch (error) {
+    return (
+      <AdminConfigError
+        message={error instanceof Error ? error.message : "No se pudo configurar Supabase."}
+      />
+    );
+  }
   const { data } = await supabase
     .from("categories")
     .select("*, demos(count)")

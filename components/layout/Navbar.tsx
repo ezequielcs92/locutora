@@ -1,10 +1,11 @@
 "use client";
 
 import { useLenis } from "lenis/react";
-import { Menu, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/lib/site-config";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 const LINKS = [
   { id: "inicio", label: "Inicio" },
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const lenis = useLenis();
+  const { theme, toggleTheme } = useTheme();
 
   // Scroll-spy: marca la sección visible
   useEffect(() => {
@@ -73,37 +75,55 @@ export default function Navbar() {
         </button>
 
         {/* Desktop */}
-        <ul className="hidden items-center gap-1 md:flex">
-          {LINKS.map((link) => (
-            <li key={link.id} className="relative">
-              <button
-                onClick={() => goTo(link.id)}
-                className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
-                  active === link.id ? "text-cream" : "text-muted hover:text-cream"
-                }`}
-              >
-                {active === link.id && (
-                  <motion.span
-                    layoutId="nav-pill"
-                    className="absolute inset-0 -z-10 rounded-full bg-cream/8"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="hidden items-center gap-1 md:flex">
+          <ul className="flex items-center gap-1">
+            {LINKS.map((link) => (
+              <li key={link.id} className="relative">
+                <button
+                  onClick={() => goTo(link.id)}
+                  className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
+                    active === link.id ? "text-cream" : "text-muted hover:text-cream"
+                  }`}
+                >
+                  {active === link.id && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 -z-10 rounded-full bg-cream/8"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  {link.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "light" ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
+            className="ml-2 rounded-full p-2 text-muted transition-colors hover:text-cream"
+          >
+            {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+        </div>
 
         {/* Mobile toggle */}
-        <button
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={menuOpen}
-          className="rounded-md p-2 text-cream md:hidden"
-        >
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "light" ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
+            className="rounded-md p-2 text-muted transition-colors hover:text-cream"
+          >
+            {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={menuOpen}
+            className="rounded-md p-2 text-cream md:hidden"
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile panel */}

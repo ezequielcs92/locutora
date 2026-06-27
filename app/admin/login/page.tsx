@@ -3,11 +3,8 @@
 import { Loader2, Mic } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
-const supabaseConfigured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+const adminEmail = "admin@locutora.com";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,19 +17,19 @@ export default function LoginPage() {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: String(formData.get("email")),
-      password: String(formData.get("password")),
-    });
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "").trim();
 
-    if (signInError) {
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
       setLoading(false);
-      setError(
-        signInError.message === "Invalid login credentials"
-          ? "Email o contraseña incorrectos."
-          : signInError.message
-      );
+      setError(data.error ?? "No se pudo iniciar sesión.");
       return;
     }
 
@@ -48,31 +45,20 @@ export default function LoginPage() {
             <Mic size={26} />
           </span>
           <h1 className="font-display text-2xl font-medium text-cream">Panel de administración</h1>
-          <p className="text-sm text-muted">Ingresá con tu cuenta de administradora</p>
+          <p className="text-sm text-muted">Ingresá con el usuario administrador</p>
         </div>
 
-        {!supabaseConfigured ? (
-          <div className="rounded-2xl border border-accent/30 bg-surface p-6 text-sm leading-relaxed text-muted">
-            <p className="mb-2 font-semibold text-cream">Supabase no está configurado</p>
-            <p>
-              Completá <code className="text-accent">NEXT_PUBLIC_SUPABASE_URL</code> y{" "}
-              <code className="text-accent">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> en{" "}
-              <code className="text-accent">.env.local</code>, corré las migraciones de{" "}
-              <code className="text-accent">supabase/migrations/</code> y creá el usuario admin
-              desde el panel de Supabase (Authentication → Users).
-            </p>
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-4 rounded-2xl border border-cream/10 bg-surface p-6"
-          >
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 rounded-2xl border border-cream/10 bg-surface p-6"
+        >
             <label className="flex flex-col gap-2">
               <span className="text-sm text-muted">Email</span>
               <input
                 name="email"
                 type="email"
                 required
+                defaultValue={adminEmail}
                 autoComplete="email"
                 className="rounded-xl border border-cream/10 bg-bg px-4 py-3 text-cream focus:border-accent/60 focus:outline-none"
               />
@@ -84,6 +70,7 @@ export default function LoginPage() {
                 type="password"
                 required
                 autoComplete="current-password"
+                placeholder="Contraseña del administrador"
                 className="rounded-xl border border-cream/10 bg-bg px-4 py-3 text-cream focus:border-accent/60 focus:outline-none"
               />
             </label>
@@ -102,8 +89,7 @@ export default function LoginPage() {
               {loading && <Loader2 size={18} className="animate-spin" />}
               {loading ? "Ingresando…" : "Ingresar"}
             </button>
-          </form>
-        )}
+        </form>
       </div>
     </main>
   );

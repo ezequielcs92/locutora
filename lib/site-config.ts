@@ -1,6 +1,5 @@
 /**
  * Datos de la clienta y textos del sitio, centralizados.
- * ⚠️ PENDIENTE: reemplazar por los datos reales (ver sección 7 del plan).
  */
 export const siteConfig = {
   name: "Agustina Vidal",
@@ -11,12 +10,11 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   whatsapp: {
-    // Solo dígitos, con código de país, sin "+" (formato wa.me)
-    number: "5491100000000",
+    number: "5491157450521",
     message:
       "¡Hola! Escuché tus demos en tu sitio y me gustaría hacerte una consulta.",
   },
-  email: "hola@valentinarios.com",
+  email: "contactoagusvidal@gmail.com",
 
   socials: [
     { name: "Instagram", url: "https://instagram.com/valentinarios.voz" },
@@ -25,14 +23,14 @@ export const siteConfig = {
   ],
 
   bio: [
-    "Soy locutora profesional con más de diez años de experiencia poniéndole voz a marcas, instituciones y proyectos de toda Latinoamérica.",
-    "Trabajo desde mi estudio propio con calidad broadcast y entregas en menos de 48 horas. Publicidad, institucionales, IVR, e-learning, doblaje: si tu proyecto necesita una voz, puedo ayudarte a encontrar el tono justo.",
+    "Soy locutora profesional matriculada con más de diez años de experiencia poniéndole voz a marcas, instituciones y proyectos de toda Latinoamérica.",
+    "Trabajo desde mi propio estudio con calidad broadcast y entregas en menos de 48 horas. Contactame por publicidades, institucionales, IVR, e-learning, doblaje o conducciones: si tu proyecto necesita una voz, puedo ayudarte a encontrar el tono justo.",
   ],
 
   highlights: [
     { value: 10, suffix: "+", label: "Años de experiencia" },
-    { value: 200, suffix: "+", label: "Clientes" },
-    { value: 1500, suffix: "+", label: "Proyectos entregados" },
+    { value: 150, suffix: "+", label: "Clientes" },
+    { value: 500, suffix: "+", label: "Proyectos entregados" },
     { value: 48, suffix: "h", label: "Entrega máxima" },
   ],
 } as const;

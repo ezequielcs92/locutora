@@ -1,21 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { adminCookieName, getAdminSession } from "@/lib/admin-auth";
 import { isR2Configured } from "@/lib/env";
 import { deleteObject } from "@/lib/r2";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { slugify } from "@/lib/utils";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
 async function requireAuth() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autorizado.");
-  return supabase;
+  const session = await getAdminSession();
+  if (!session) throw new Error("No autorizado.");
+  return createAdminClient();
 }
 
 async function cleanupUploadedAudio(key: string) {
@@ -34,8 +33,8 @@ function fail(error: unknown, fallback: string): ActionResult {
 }
 
 export async function signOut() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
+  const cookieStore = await cookies();
+  cookieStore.delete(adminCookieName);
   redirect("/admin/login");
 }
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
+import { getAdminSession } from "@/lib/admin-auth";
 import { isR2Configured } from "@/lib/env";
 import { createUploadUrl } from "@/lib/r2";
-import { createClient } from "@/lib/supabase/server";
 
 const ALLOWED_TYPES = new Set([
   "audio/mpeg",
@@ -17,11 +17,8 @@ const ALLOWED_TYPES = new Set([
 
 /** Genera una presigned URL para subir un audio directo del browser a R2. */
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: "No autorizado." }, { status: 401 });
   }
 
