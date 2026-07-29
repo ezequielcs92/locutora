@@ -24,6 +24,7 @@ export default function Sobre() {
               src="/images/agustina-vidal.jpg"
               alt={`${siteConfig.name} en el estudio de Fox Sports`}
               fill
+              unoptimized
               sizes="(max-width: 1024px) 100vw, 40vw"
               className="object-cover object-center"
             />
