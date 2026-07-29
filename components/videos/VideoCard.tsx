@@ -28,6 +28,7 @@ export default function VideoCard({ video, onOpen }: VideoCardProps) {
           src={videoThumbnailUrl(video.platform, video.videoId)}
           alt={video.title}
           fill
+          unoptimized
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
