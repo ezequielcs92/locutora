@@ -1,0 +1,26 @@
+# Mantiene la base de Supabase (plan free) activa con una lectura liviana periódica.
+# Supabase pausa los proyectos sin actividad; este ping cada 3 días lo evita.
+#
+# Secrets requeridos en GitHub (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL       -> mismo valor que NEXT_PUBLIC_SUPABASE_URL
+#   SUPABASE_ANON_KEY  -> mismo valor que NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+name: Keep Supabase alive
+
+on:
+  schedule:
+    # Cada 3 días a las 08:00 UTC (05:00 Argentina)
+    - cron: "0 8 */3 * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping Supabase (lectura pública liviana)
+        run: |
+          curl -sS -f -o /dev/null \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/categories?select=id&limit=1"
