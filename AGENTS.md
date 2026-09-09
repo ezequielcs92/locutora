@@ -26,17 +26,19 @@ Portfolio one-page para una locutora profesional con demos de audio filtrables, 
 - Respetar `prefers-reduced-motion` en todas las animaciones
 - Textos, contacto y datos de la clienta centralizados en `lib/site-config.ts`
 
-## Modo mock (sin credenciales)
+## Sin credenciales
 
-Si `NEXT_PUBLIC_SUPABASE_URL` no está definida, `lib/data.ts` devuelve datos de muestra
-(`lib/mock-data.ts`) con audios placeholder en `public/demos/`. Así el sitio corre completo
-sin configurar nada. El admin sí requiere Supabase real.
+Si `NEXT_PUBLIC_SUPABASE_URL` no está definida o Supabase no responde, `lib/data.ts`
+devuelve listas vacías y las secciones muestran su estado vacío (no hay contenido
+de muestra en el sitio público). El admin sí requiere Supabase real.
 
 ## Base de datos
 
 - Migraciones en `supabase/migrations/` (correr en el SQL Editor de Supabase, en orden)
 - Seed en `supabase/seed.sql`
 - RLS: lectura pública solo de `is_published = true`; escritura solo `authenticated`
+- Grants: `0002_grants.sql` da `select` a `anon, authenticated` (sin GRANT, PostgREST
+  responde 404 aunque existan las policies)
 - `play_count` se incrementa vía RPC `increment_play_count(demo_id)` (security definer)
 - El admin es un único usuario creado a mano en Supabase Auth — registro deshabilitado
 - Nota: se agregó la columna `slug` a `demos` (no estaba en el plan original) para los deep links `?demo=slug`

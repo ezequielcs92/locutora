@@ -1,16 +1,25 @@
 import { isSupabaseConfigured } from "./env";
-import { mockCategories, mockDemos, mockVideos } from "./mock-data";
 import { publicUrl } from "./r2";
 import { createPublicClient } from "./supabase/public";
 import type { PublicCategory, PublicDemo, PublicVideo } from "./types";
 
 /**
- * Capa de datos del sitio público. Si Supabase no está configurado,
- * devuelve datos de muestra para poder desarrollar/previsualizar sin credenciales.
+ * Capa de datos del sitio público. Sin Supabase o ante un error de
+ * conexión devuelve listas vacías: las secciones saben renderizar el
+ * estado vacío y se prefiere no mostrar contenido de muestra.
  */
 
+function warn(message: string): void {
+  if (process.env.NODE_ENV === "development") {
+    console.warn(message);
+  }
+}
+
 export async function getPublicCategories(): Promise<PublicCategory[]> {
-  if (!isSupabaseConfigured()) return mockCategories;
+  if (!isSupabaseConfigured()) {
+    warn("Supabase no configurado, devolviendo categorías vacías");
+    return [];
+  }
 
   try {
     const supabase = createPublicClient();
@@ -20,22 +29,21 @@ export async function getPublicCategories(): Promise<PublicCategory[]> {
       .order("sort_order", { ascending: true });
 
     if (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("Supabase no disponible, usando datos mock:", error.message);
-      }
-      return mockCategories;
+      warn(`Supabase no disponible, devolviendo categorías vacías: ${error.message}`);
+      return [];
     }
     return data ?? [];
   } catch {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("Error de conexión a Supabase, usando datos mock");
-    }
-    return mockCategories;
+    warn("Error de conexión a Supabase, devolviendo categorías vacías");
+    return [];
   }
 }
 
 export async function getPublicDemos(): Promise<PublicDemo[]> {
-  if (!isSupabaseConfigured()) return mockDemos;
+  if (!isSupabaseConfigured()) {
+    warn("Supabase no configurado, devolviendo demos vacíos");
+    return [];
+  }
 
   try {
     const supabase = createPublicClient();
@@ -48,10 +56,8 @@ export async function getPublicDemos(): Promise<PublicDemo[]> {
       .order("sort_order", { ascending: true });
 
     if (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("Supabase no disponible, usando datos mock:", error.message);
-      }
-      return mockDemos;
+      warn(`Supabase no disponible, devolviendo demos vacíos: ${error.message}`);
+      return [];
     }
 
     return (data ?? []).map((row) => {
@@ -68,15 +74,16 @@ export async function getPublicDemos(): Promise<PublicDemo[]> {
       };
     });
   } catch {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("Error de conexión a Supabase, usando datos mock");
-    }
-    return mockDemos;
+    warn("Error de conexión a Supabase, devolviendo demos vacíos");
+    return [];
   }
 }
 
 export async function getPublicVideos(): Promise<PublicVideo[]> {
-  if (!isSupabaseConfigured()) return mockVideos;
+  if (!isSupabaseConfigured()) {
+    warn("Supabase no configurado, devolviendo videos vacíos");
+    return [];
+  }
 
   try {
     const supabase = createPublicClient();
@@ -87,10 +94,8 @@ export async function getPublicVideos(): Promise<PublicVideo[]> {
       .order("sort_order", { ascending: true });
 
     if (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("Supabase no disponible, usando datos mock:", error.message);
-      }
-      return mockVideos;
+      warn(`Supabase no disponible, devolviendo videos vacíos: ${error.message}`);
+      return [];
     }
 
     return (data ?? []).map((row) => ({
@@ -101,9 +106,7 @@ export async function getPublicVideos(): Promise<PublicVideo[]> {
       videoId: row.video_id,
     }));
   } catch {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("Error de conexión a Supabase, usando datos mock");
-    }
-    return mockVideos;
+    warn("Error de conexión a Supabase, devolviendo videos vacíos");
+    return [];
   }
 }

@@ -25,8 +25,8 @@ npm run dev
 ```
 
 El sitio público funciona sin credenciales: si no está configurado
-`NEXT_PUBLIC_SUPABASE_URL`, se usan datos mock de `lib/mock-data.ts` y audios en
-`public/demos/`.
+`NEXT_PUBLIC_SUPABASE_URL` o Supabase no responde, las secciones muestran su
+estado vacío (sin contenido de muestra).
 
 El panel `/admin` requiere Supabase real.
 
