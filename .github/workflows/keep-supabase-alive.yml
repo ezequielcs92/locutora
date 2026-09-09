@@ -20,7 +20,11 @@ jobs:
     steps:
       - name: Ping Supabase (lectura pública liviana)
         run: |
-          curl -sS -f -o /dev/null \
+          URL="${{ secrets.SUPABASE_URL }}"
+          URL="${URL%/}"
+          CODE=$(curl -sS -o /dev/null -w "%{http_code}" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-            "${{ secrets.SUPABASE_URL }}/rest/v1/categories?select=id&limit=1"
+            "$URL/rest/v1/categories?select=id&limit=1")
+          echo "HTTP status: $CODE"
+          test "$CODE" = "200"
