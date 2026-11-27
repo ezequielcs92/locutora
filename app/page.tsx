@@ -9,17 +9,19 @@ import Demos from "@/components/sections/Demos";
 import Hero from "@/components/sections/Hero";
 import Sobre from "@/components/sections/Sobre";
 import Trabajos from "@/components/sections/Trabajos";
-import { getPublicCategories, getPublicDemos, getPublicVideos } from "@/lib/data";
+import Videos from "@/components/sections/Videos";
+import { getPublicCategories, getPublicDemos, getPublicVideos, getPublicWorks } from "@/lib/data";
 import { siteConfig } from "@/lib/site-config";
 
 // Revalidación incremental; el admin fuerza revalidatePath al mutar contenido
 export const revalidate = 60;
 
 export default async function Home() {
-  const [demos, categories, videos] = await Promise.all([
+  const [demos, categories, videos, works] = await Promise.all([
     getPublicDemos(),
     getPublicCategories(),
     getPublicVideos(),
+    getPublicWorks(),
   ]);
 
   const jsonLd = {
@@ -47,7 +49,8 @@ export default async function Home() {
         <main className="relative z-10">
           <Hero featuredDemos={demos} />
           <Demos demos={demos} categories={categories} />
-          <Trabajos videos={videos} />
+          <Videos videos={videos} />
+          <Trabajos videos={works} />
           <Sobre />
           <Contacto />
         </main>

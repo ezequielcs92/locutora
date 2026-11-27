@@ -45,6 +45,15 @@ export default function SocialIcon({ name, ...props }: SocialIconProps) {
     );
   }
 
+  if (name === "TikTok") {
+    return (
+      <svg {...commonProps}>
+        <path d="M14 3v12.5a4.5 4.5 0 1 1-4-4.47" />
+        <path d="M14 3c.5 3.5 2.5 5.5 6 5.5V12a10 10 0 0 1-6-2" />
+      </svg>
+    );
+  }
+
   return (
     <svg {...commonProps}>
       <circle cx="12" cy="12" r="9" />

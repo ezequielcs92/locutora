@@ -3,7 +3,7 @@ import VideosManager from "@/components/admin/VideosManager";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Video } from "@/lib/types";
 
-export const metadata = { title: "Videos — Admin" };
+export const metadata = { title: "Mis demos — Admin" };
 
 export default async function AdminVideosPage() {
   let supabase: ReturnType<typeof createAdminClient>;
@@ -16,10 +16,14 @@ export default async function AdminVideosPage() {
       />
     );
   }
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("videos")
     .select("*")
     .order("sort_order", { ascending: true });
 
-  return <VideosManager videos={(data ?? []) as Video[]} />;
+  if (error) {
+    return <AdminConfigError showCredentialsHelp={false} message="No se pudieron cargar los demos audiovisuales. Revisá la conexión a Supabase." />;
+  }
+
+  return <VideosManager collection="videos" videos={(data ?? []) as Video[]} />;
 }

@@ -2,24 +2,19 @@
 
 import { useLenis } from "lenis/react";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/lib/site-config";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
-const LINKS = [
-  { id: "inicio", label: "Inicio" },
-  { id: "demos", label: "Demos" },
-  { id: "trabajos", label: "Trabajos" },
-  { id: "sobre-mi", label: "Sobre mí" },
-  { id: "contacto", label: "Contacto" },
-] as const;
+const LINKS = siteConfig.navigation;
 
 export default function Navbar() {
   const [active, setActive] = useState<string>("inicio");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const lenis = useLenis();
+  const reduced = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
 
   // Scroll-spy: marca la sección visible
@@ -50,7 +45,9 @@ export default function Navbar() {
     setMenuOpen(false);
     const el = document.getElementById(id);
     if (!el) return;
-    if (lenis) {
+    if (reduced) {
+      el.scrollIntoView({ behavior: "instant" });
+    } else if (lenis) {
       lenis.scrollTo(el, { offset: -72, duration: 1.2 });
     } else {
       el.scrollIntoView({ behavior: "smooth" });
@@ -75,7 +72,7 @@ export default function Navbar() {
         </button>
 
         {/* Desktop */}
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           <ul className="flex items-center gap-1">
             {LINKS.map((link) => (
               <li key={link.id} className="relative">
@@ -107,7 +104,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile toggle */}
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-1 lg:hidden">
           <button
             onClick={toggleTheme}
             aria-label={theme === "light" ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
@@ -119,7 +116,7 @@ export default function Navbar() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuOpen}
-            className="rounded-md p-2 text-cream md:hidden"
+            className="rounded-md p-2 text-cream lg:hidden"
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -134,7 +131,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-b border-cream/5 bg-bg/95 backdrop-blur-md md:hidden"
+            className="overflow-hidden border-b border-cream/5 bg-bg/95 backdrop-blur-md lg:hidden"
           >
             <ul className="section-container flex flex-col gap-1 py-4">
               {LINKS.map((link, i) => (

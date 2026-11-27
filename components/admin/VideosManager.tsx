@@ -28,6 +28,7 @@ import {
   updateVideo,
 } from "@/app/admin/actions";
 import type { Video } from "@/lib/types";
+import { videoCollectionConfig, type VideoCollection } from "@/lib/video-collections";
 import { parseVideoUrl, videoThumbnailUrl, type ParsedVideoUrl } from "@/lib/utils";
 
 /* ---------- Fila sortable ---------- */
@@ -52,7 +53,7 @@ function VideoRow({
     <li
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-center gap-3 rounded-xl border border-cream/8 bg-surface p-3 ${
+      className={`flex flex-wrap items-center gap-3 rounded-xl border border-cream/8 bg-surface p-3 sm:flex-nowrap ${
         isDragging ? "z-10 opacity-80 shadow-xl" : ""
       }`}
     >
@@ -110,7 +111,7 @@ function VideoRow({
 
 /* ---------- Formulario ---------- */
 
-function VideoForm({ video, onClose }: { video: Video | null; onClose: () => void }) {
+function VideoForm({ video, collection, onClose }: { video: Video | null; collection: VideoCollection; onClose: () => void }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -149,7 +150,9 @@ function VideoForm({ video, onClose }: { video: Video | null; onClose: () => voi
       isPublished: formData.get("isPublished") === "on",
     };
 
-    const result = video ? await updateVideo(video.id, input) : await createVideo(input);
+    const result = video
+      ? await updateVideo(video.id, input, collection)
+      : await createVideo(input, collection);
 
     if (!result.ok) {
       setError(result.error);
@@ -168,7 +171,9 @@ function VideoForm({ video, onClose }: { video: Video | null; onClose: () => voi
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-cream/10 bg-surface p-6">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="font-display text-xl font-medium text-cream">
-            {video ? "Editar video" : "Nuevo video"}
+            {collection === "works"
+              ? (video ? "Editar trabajo" : "Nuevo trabajo")
+              : (video ? "Editar demo audiovisual" : "Nuevo demo audiovisual")}
           </h2>
           <button
             onClick={onClose}
@@ -240,7 +245,7 @@ function VideoForm({ video, onClose }: { video: Video | null; onClose: () => voi
               name="isPublished"
               type="checkbox"
               defaultChecked={video?.is_published ?? false}
-              className="h-4 w-4 accent-[#d9a154]"
+              className="h-4 w-4 accent-accent"
             />
             <span className="text-sm text-cream">Publicar en el sitio</span>
           </label>
@@ -265,7 +270,7 @@ function VideoForm({ video, onClose }: { video: Video | null; onClose: () => voi
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-2.5 text-sm font-semibold text-bg hover:bg-accent-strong disabled:opacity-70"
             >
               {saving && <Loader2 size={16} className="animate-spin" />}
-              {video ? "Guardar cambios" : "Agregar video"}
+              {video ? "Guardar cambios" : collection === "works" ? "Agregar trabajo" : "Agregar demo audiovisual"}
             </button>
           </div>
         </form>
@@ -276,8 +281,9 @@ function VideoForm({ video, onClose }: { video: Video | null; onClose: () => voi
 
 /* ---------- Manager ---------- */
 
-export default function VideosManager({ videos }: { videos: Video[] }) {
+export default function VideosManager({ videos, collection = "videos" }: { videos: Video[]; collection?: VideoCollection }) {
   const router = useRouter();
+  const { title } = videoCollectionConfig(collection);
   const [items, setItems] = useState(videos);
   const [formState, setFormState] = useState<{ open: boolean; video: Video | null }>({
     open: false,
@@ -303,15 +309,18 @@ export default function VideosManager({ videos }: { videos: Video[] }) {
     setItems(reordered);
 
     startTransition(async () => {
-      const result = await reorderVideos(reordered.map((v) => v.id));
-      if (!result.ok) setActionError(result.error);
+      const result = await reorderVideos(reordered.map((v) => v.id), collection);
+      if (!result.ok) {
+        setItems(videos);
+        setActionError(result.error);
+      }
     });
   }
 
   function handleDelete(video: Video) {
     if (!window.confirm(`¿Eliminar "${video.title}"?`)) return;
     startTransition(async () => {
-      const result = await deleteVideo(video.id);
+      const result = await deleteVideo(video.id, collection);
       if (!result.ok) setActionError(result.error);
       else router.refresh();
     });
@@ -319,7 +328,7 @@ export default function VideosManager({ videos }: { videos: Video[] }) {
 
   function handleTogglePublished(video: Video) {
     startTransition(async () => {
-      const result = await toggleVideoPublished(video.id, !video.is_published);
+      const result = await toggleVideoPublished(video.id, !video.is_published, collection);
       if (!result.ok) setActionError(result.error);
       else router.refresh();
     });
@@ -327,11 +336,14 @@ export default function VideosManager({ videos }: { videos: Video[] }) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-medium text-cream">Videos</h1>
+          <h1 className="font-display text-2xl font-medium text-cream">{title}</h1>
           <p className="mt-1 text-sm text-muted">
-            Pegá la URL de YouTube o Vimeo: el sistema detecta la plataforma solo.
+            {collection === "works"
+              ? "Cargá trabajos realizados. Se muestran en Trabajos, separados de tus demos."
+              : "Tus demos audiovisuales se muestran en Videos → Mis demos."}
+            {" "}Pegá la URL de YouTube o Vimeo.
           </p>
         </div>
         <button
@@ -339,7 +351,7 @@ export default function VideosManager({ videos }: { videos: Video[] }) {
           className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-bg hover:bg-accent-strong"
         >
           <Plus size={17} />
-          Nuevo video
+          {collection === "works" ? "Nuevo trabajo" : "Nuevo demo audiovisual"}
         </button>
       </div>
 
@@ -351,7 +363,7 @@ export default function VideosManager({ videos }: { videos: Video[] }) {
 
       {items.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-cream/15 p-10 text-center text-muted">
-          Todavía no hay videos cargados.
+          {collection === "works" ? "Todavía no hay trabajos cargados." : "Todavía no hay demos audiovisuales cargados."}
         </p>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -373,7 +385,7 @@ export default function VideosManager({ videos }: { videos: Video[] }) {
       )}
 
       {formState.open && (
-        <VideoForm video={formState.video} onClose={() => setFormState({ open: false, video: null })} />
+        <VideoForm collection={collection} video={formState.video} onClose={() => setFormState({ open: false, video: null })} />
       )}
     </div>
   );

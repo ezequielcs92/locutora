@@ -89,11 +89,24 @@ Ejemplo de CORS para R2:
 npm run dev       # desarrollo con Turbopack
 npm run build     # build de producción
 npm run lint      # ESLint
+npm test          # aislamiento de colecciones, permisos de acciones y lectura pública (mocks)
 npm run gen:audio # regenera audios placeholder
 npm run gen:types # tipos de Supabase, requiere proyecto linkeado
 ```
 
 ## Contenido
+
+El orden público y del menú es: Inicio, Demos (audio), Videos (Mis demos),
+Trabajos, Sobre mí y Contacto.
+
+Los demos audiovisuales ya cargados siguen en `videos` y se administran desde
+`/admin/videos` (Mis demos). Los trabajos realizados se cargan por separado
+desde `/admin/trabajos` en la tabla `works`, con publicación y orden independientes.
+
+**Antes de cargar trabajos**, ejecutar `supabase/migrations/0003_works.sql` en el
+SQL Editor de Supabase, después de las migraciones anteriores. No modifica ni
+mueve los demos existentes. Sin esa tabla, la sección pública de trabajos
+muestra su estado vacío y el panel avisa que falta configurar la migración.
 
 Los textos, enlaces, redes y datos de contacto están centralizados en
 `lib/site-config.ts`. Antes de publicar con dominio real, actualizar ahí el

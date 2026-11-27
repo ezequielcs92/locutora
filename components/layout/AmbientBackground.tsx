@@ -63,13 +63,13 @@ export default function AmbientBackground() {
       data-testid="ambient-background"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-bg"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_52%_18%,rgb(184_131_46/0.10),transparent_44%),linear-gradient(180deg,rgb(26_23_20/0.04)_0%,rgb(26_23_20/0.12)_72%,var(--color-bg)_100%)] dark:bg-[radial-gradient(ellipse_at_52%_18%,rgba(217,161,84,0.16),transparent_44%),linear-gradient(180deg,rgba(14,12,9,0.14)_0%,rgba(14,12,9,0.44)_72%,#0e0c09_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_52%_18%,var(--color-surface-2),transparent_65%)] opacity-50" />
 
       <motion.div
         className="absolute inset-0 opacity-[0.12] dark:opacity-[0.26]"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(90deg, transparent 0 2.4rem, rgb(184 131 46 / 0.12) 2.4rem calc(2.4rem + 1px), transparent calc(2.4rem + 1px) 4.8rem)",
+            "repeating-linear-gradient(90deg, transparent 0 2.4rem, color-mix(in srgb, var(--color-accent) 12%, transparent) 2.4rem calc(2.4rem + 1px), transparent calc(2.4rem + 1px) 4.8rem)",
           maskImage:
             "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
           WebkitMaskImage:
@@ -86,15 +86,15 @@ export default function AmbientBackground() {
       >
         <defs>
           <linearGradient id="radio-wave-stroke" x1="0%" x2="100%" y1="0%" y2="0%">
-            <stop offset="0%" stopColor="#ecbe7a" stopOpacity="0" />
-            <stop offset="14%" stopColor="#ecbe7a" stopOpacity="0.62" />
-            <stop offset="50%" stopColor="#f4ede3" stopOpacity="0.28" />
-            <stop offset="86%" stopColor="#d9a154" stopOpacity="0.56" />
-            <stop offset="100%" stopColor="#ecbe7a" stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0" />
+            <stop offset="14%" stopColor="var(--color-accent)" stopOpacity="0.62" />
+            <stop offset="50%" stopColor="var(--color-muted)" stopOpacity="0.28" />
+            <stop offset="86%" stopColor="var(--color-accent)" stopOpacity="0.56" />
+            <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="radio-ring-stroke" x1="0%" x2="100%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor="#ecbe7a" stopOpacity="0.46" />
-            <stop offset="100%" stopColor="#f4ede3" stopOpacity="0.12" />
+            <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.46" />
+            <stop offset="100%" stopColor="var(--color-muted)" stopOpacity="0.12" />
           </linearGradient>
           <mask id="radio-fade-mask">
             <rect width="1440" height="900" fill="url(#radio-fade-gradient)" />
@@ -121,7 +121,7 @@ export default function AmbientBackground() {
               strokeLinecap="round"
               strokeWidth={wave.width}
               vectorEffect="non-scaling-stroke"
-              initial={false}
+              initial={{ opacity: wave.opacity, pathLength: 1, strokeDashoffset: 0 }}
               animate={
                 reduced
                   ? { opacity: wave.opacity }
@@ -131,7 +131,7 @@ export default function AmbientBackground() {
                       strokeDashoffset: [0, -260],
                     }
               }
-              style={{ filter: "drop-shadow(0 0 6px rgba(236,190,122,0.2))", strokeDasharray: "22 24" }}
+              style={{ strokeDasharray: "22 24" }}
               transition={{
                 delay: wave.delay,
                 duration: wave.duration,
@@ -153,6 +153,7 @@ export default function AmbientBackground() {
               stroke="url(#radio-ring-stroke)"
               strokeWidth="1.2"
               vectorEffect="non-scaling-stroke"
+              initial={{ opacity: ring.opacity, scale: 1 }}
               animate={
                 reduced
                   ? { opacity: ring.opacity }
@@ -173,7 +174,7 @@ export default function AmbientBackground() {
       </svg>
 
       <motion.div
-        className="absolute inset-y-0 left-[-20%] w-[42%] skew-x-[-14deg] bg-[linear-gradient(90deg,transparent,rgb(184_131_46/0.08),transparent)] dark:bg-[linear-gradient(90deg,transparent,rgba(236,190,122,0.16),transparent)]"
+        className="absolute inset-y-0 left-[-20%] w-[42%] skew-x-[-14deg] bg-gradient-to-r from-transparent via-accent/10 to-transparent"
         animate={reduced ? undefined : { x: ["0%", "330%", "0%"], opacity: [0, 0.42, 0] }}
         transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -186,7 +187,7 @@ export default function AmbientBackground() {
           backgroundSize: "34px 34px",
         }}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(26_23_20/0.02)_0%,rgb(26_23_20/0.08)_55%,rgb(26_23_20/0.18)_100%)] dark:bg-[linear-gradient(180deg,rgba(14,12,9,0.08)_0%,rgba(14,12,9,0.38)_55%,rgba(14,12,9,0.88)_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-bg/70" />
     </div>
   );
 }

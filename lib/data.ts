@@ -2,6 +2,7 @@ import { isSupabaseConfigured } from "./env";
 import { publicUrl } from "./r2";
 import { createPublicClient } from "./supabase/public";
 import type { PublicCategory, PublicDemo, PublicVideo } from "./types";
+import { videoCollectionConfig, type VideoCollection } from "./video-collections";
 
 /**
  * Capa de datos del sitio público. Sin Supabase o ante un error de
@@ -80,6 +81,14 @@ export async function getPublicDemos(): Promise<PublicDemo[]> {
 }
 
 export async function getPublicVideos(): Promise<PublicVideo[]> {
+  return getPublicVideoCollection("videos");
+}
+
+export async function getPublicWorks(): Promise<PublicVideo[]> {
+  return getPublicVideoCollection("works");
+}
+
+async function getPublicVideoCollection(collection: VideoCollection): Promise<PublicVideo[]> {
   if (!isSupabaseConfigured()) {
     warn("Supabase no configurado, devolviendo videos vacíos");
     return [];
@@ -88,7 +97,7 @@ export async function getPublicVideos(): Promise<PublicVideo[]> {
   try {
     const supabase = createPublicClient();
     const { data, error } = await supabase
-      .from("videos")
+      .from(videoCollectionConfig(collection).table)
       .select("id, title, description, platform, video_id")
       .eq("is_published", true)
       .order("sort_order", { ascending: true });

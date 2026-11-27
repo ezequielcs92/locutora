@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, FolderOpen, ListMusic, LogOut, Video } from "lucide-react";
+import { BriefcaseBusiness, ExternalLink, FolderOpen, ListMusic, LogOut, Video } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
@@ -8,7 +8,8 @@ import { signOut } from "@/app/admin/actions";
 
 const LINKS = [
   { href: "/admin/demos", label: "Demos", icon: ListMusic },
-  { href: "/admin/videos", label: "Videos", icon: Video },
+  { href: "/admin/videos", label: "Mis demos", icon: Video },
+  { href: "/admin/trabajos", label: "Trabajos", icon: BriefcaseBusiness },
   { href: "/admin/categorias", label: "Categorías", icon: FolderOpen },
 ];
 

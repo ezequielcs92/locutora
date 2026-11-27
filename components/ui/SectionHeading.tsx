@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 
 interface SectionHeadingProps {
   eyebrow: string;
@@ -10,7 +10,6 @@ interface SectionHeadingProps {
 
 /** Encabezado de sección con reveal al entrar en viewport. */
 export default function SectionHeading({ eyebrow, title, description }: SectionHeadingProps) {
-  const reduced = useReducedMotion();
   const words = title.split(" ");
 
   return (
@@ -29,8 +28,8 @@ export default function SectionHeading({ eyebrow, title, description }: SectionH
           <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-1 pr-2">
             <motion.span
               className="inline-block"
-              initial={reduced ? false : { y: "115%", rotate: 2 }}
-              whileInView={reduced ? undefined : { y: 0, rotate: 0 }}
+              initial={{ y: "115%", rotate: 2 }}
+              whileInView={{ y: 0, rotate: 0 }}
               viewport={{ once: true, margin: "-15% 0px" }}
               transition={{
                 duration: 0.75,
@@ -46,8 +45,8 @@ export default function SectionHeading({ eyebrow, title, description }: SectionH
       <motion.div
         aria-hidden
         className="mt-5 h-px max-w-48 bg-gradient-to-r from-accent via-accent/50 to-transparent"
-        initial={reduced ? false : { scaleX: 0, opacity: 0 }}
-        whileInView={reduced ? undefined : { scaleX: 1, opacity: 1 }}
+        initial={{ scaleX: 0, opacity: 0 }}
+        whileInView={{ scaleX: 1, opacity: 1 }}
         viewport={{ once: true, margin: "-15% 0px" }}
         transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
         style={{ transformOrigin: "left" }}

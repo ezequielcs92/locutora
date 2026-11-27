@@ -66,7 +66,7 @@ export default function DemoCard({ demo, highlighted = false }: DemoCardProps) {
     <motion.article
       ref={cardRef}
       layout
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 22, scale: 0.96 }}
+      initial={{ opacity: 0, y: 22, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={reduced ? { opacity: 0 } : { opacity: 0, y: 18, scale: 0.96 }}
       whileHover={reduced ? undefined : { y: -6 }}
@@ -80,11 +80,11 @@ export default function DemoCard({ demo, highlighted = false }: DemoCardProps) {
         pointerX.set(0);
         pointerY.set(0);
       }}
-      style={reduced ? undefined : { rotateX, rotateY, transformPerspective: 900 }}
+      style={{ rotateX, rotateY, transformPerspective: 900 }}
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-      className={`group relative overflow-hidden rounded-2xl border bg-surface p-5 transition-colors ${
+      className={`group relative h-full overflow-hidden rounded-xl border bg-surface p-3.5 transition-colors ${
         highlighted
-          ? "border-accent/60 shadow-[0_0_40px_-12px_rgba(217,161,84,0.45)]"
+          ? "border-accent/60 shadow-xl shadow-accent/20"
           : isActive
             ? "border-accent/40"
             : "border-cream/8 hover:border-cream/20"
@@ -103,7 +103,7 @@ export default function DemoCard({ demo, highlighted = false }: DemoCardProps) {
         animate={reduced ? undefined : { x: isActive ? [-20, 8, -20] : 0, opacity: isActive ? [0.35, 0.75, 0.35] : 0.25 }}
         transition={{ duration: 3.6, repeat: isActive ? Infinity : 0, ease: "easeInOut" }}
       />
-      <div className="mb-4 flex items-start justify-between gap-3">
+      <div className="mb-2.5 flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="mb-1.5 flex flex-wrap items-center gap-2">
             {demo.categoryName && (
@@ -117,7 +117,7 @@ export default function DemoCard({ demo, highlighted = false }: DemoCardProps) {
           </div>
           <h3 className="truncate font-display text-lg font-medium text-cream">{demo.title}</h3>
           {demo.description && (
-            <p className="mt-1 line-clamp-2 text-sm text-muted">{demo.description}</p>
+            <p className="mt-1 line-clamp-1 text-xs text-muted" title={demo.description}>{demo.description}</p>
           )}
         </div>
 
@@ -131,14 +131,14 @@ export default function DemoCard({ demo, highlighted = false }: DemoCardProps) {
         </button>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <motion.button
           onClick={handlePlayPause}
           whileTap={{ scale: 0.92 }}
           aria-label={
             isActive && isPlaying ? `Pausar ${demo.title}` : `Reproducir ${demo.title}`
           }
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-colors ${
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors ${
             isActive
               ? "bg-accent text-bg"
               : "bg-cream/8 text-cream group-hover:bg-accent group-hover:text-bg"
@@ -153,6 +153,7 @@ export default function DemoCard({ demo, highlighted = false }: DemoCardProps) {
 
         <div className="min-w-0 flex-1">
           <Waveform
+            height={32}
             url={demo.audioUrl}
             isActive={isActive}
             currentTime={currentTime}

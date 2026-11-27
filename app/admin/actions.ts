@@ -8,6 +8,7 @@ import { isR2Configured } from "@/lib/env";
 import { deleteObject } from "@/lib/r2";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { slugify } from "@/lib/utils";
+import { videoCollectionConfig, type VideoCollection } from "@/lib/video-collections";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -196,9 +197,10 @@ export interface VideoInput {
   isPublished: boolean;
 }
 
-export async function createVideo(input: VideoInput): Promise<ActionResult> {
+export async function createVideo(input: VideoInput, collection: VideoCollection = "videos"): Promise<ActionResult> {
   try {
     const supabase = await requireAuth();
+    const { table, adminPath } = videoCollectionConfig(collection);
     if (!input.title.trim()) return { ok: false, error: "El título es obligatorio." };
     if (!input.videoId.trim()) return { ok: false, error: "Pegá una URL válida de video." };
     if (input.platform !== "youtube" && input.platform !== "vimeo") {
@@ -206,10 +208,10 @@ export async function createVideo(input: VideoInput): Promise<ActionResult> {
     }
 
     const { count } = await supabase
-      .from("videos")
+      .from(table)
       .select("id", { count: "exact", head: true });
 
-    const { error } = await supabase.from("videos").insert({
+    const { error } = await supabase.from(table).insert({
       title: input.title.trim(),
       description: input.description?.trim() || null,
       platform: input.platform,
@@ -220,23 +222,24 @@ export async function createVideo(input: VideoInput): Promise<ActionResult> {
     if (error) return { ok: false, error: error.message };
 
     revalidatePath("/");
-    revalidatePath("/admin/videos");
+    revalidatePath(adminPath);
     return { ok: true };
   } catch (err) {
     return fail(err, "No se pudo crear el video.");
   }
 }
 
-export async function updateVideo(id: string, input: VideoInput): Promise<ActionResult> {
+export async function updateVideo(id: string, input: VideoInput, collection: VideoCollection = "videos"): Promise<ActionResult> {
   try {
     const supabase = await requireAuth();
+    const { table, adminPath } = videoCollectionConfig(collection);
     if (!input.title.trim()) return { ok: false, error: "El título es obligatorio." };
     if (!input.videoId.trim()) return { ok: false, error: "Pegá una URL válida de video." };
     if (input.platform !== "youtube" && input.platform !== "vimeo") {
       return { ok: false, error: "La plataforma del video no es válida." };
     }
     const { error } = await supabase
-      .from("videos")
+      .from(table)
       .update({
         title: input.title.trim(),
         description: input.description?.trim() || null,
@@ -248,54 +251,57 @@ export async function updateVideo(id: string, input: VideoInput): Promise<Action
     if (error) return { ok: false, error: error.message };
 
     revalidatePath("/");
-    revalidatePath("/admin/videos");
+    revalidatePath(adminPath);
     return { ok: true };
   } catch (err) {
     return fail(err, "No se pudo actualizar el video.");
   }
 }
 
-export async function toggleVideoPublished(id: string, isPublished: boolean): Promise<ActionResult> {
+export async function toggleVideoPublished(id: string, isPublished: boolean, collection: VideoCollection = "videos"): Promise<ActionResult> {
   try {
     const supabase = await requireAuth();
+    const { table, adminPath } = videoCollectionConfig(collection);
     const { error } = await supabase
-      .from("videos")
+      .from(table)
       .update({ is_published: isPublished })
       .eq("id", id);
     if (error) return { ok: false, error: error.message };
     revalidatePath("/");
-    revalidatePath("/admin/videos");
+    revalidatePath(adminPath);
     return { ok: true };
   } catch (err) {
     return fail(err, "No se pudo cambiar la publicación.");
   }
 }
 
-export async function deleteVideo(id: string): Promise<ActionResult> {
+export async function deleteVideo(id: string, collection: VideoCollection = "videos"): Promise<ActionResult> {
   try {
     const supabase = await requireAuth();
-    const { error } = await supabase.from("videos").delete().eq("id", id);
+    const { table, adminPath } = videoCollectionConfig(collection);
+    const { error } = await supabase.from(table).delete().eq("id", id);
     if (error) return { ok: false, error: error.message };
     revalidatePath("/");
-    revalidatePath("/admin/videos");
+    revalidatePath(adminPath);
     return { ok: true };
   } catch (err) {
     return fail(err, "No se pudo eliminar el video.");
   }
 }
 
-export async function reorderVideos(orderedIds: string[]): Promise<ActionResult> {
+export async function reorderVideos(orderedIds: string[], collection: VideoCollection = "videos"): Promise<ActionResult> {
   try {
     const supabase = await requireAuth();
+    const { table, adminPath } = videoCollectionConfig(collection);
     for (let i = 0; i < orderedIds.length; i++) {
       const { error } = await supabase
-        .from("videos")
+        .from(table)
         .update({ sort_order: i })
         .eq("id", orderedIds[i]);
       if (error) return { ok: false, error: error.message };
     }
     revalidatePath("/");
-    revalidatePath("/admin/videos");
+    revalidatePath(adminPath);
     return { ok: true };
   } catch (err) {
     return fail(err, "No se pudo reordenar.");

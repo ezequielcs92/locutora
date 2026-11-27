@@ -80,7 +80,7 @@ export default function Demos({ demos, categories }: DemosProps) {
             Todavía no hay demos publicados en esta categoría.
           </p>
         ) : (
-          <motion.div layout className="grid gap-5 md:grid-cols-2 lg:gap-6">
+          <motion.div layout className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
             <AnimatePresence mode="popLayout">
               {filtered.map((demo, index) => (
                 <motion.div

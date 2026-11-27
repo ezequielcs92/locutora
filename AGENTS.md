@@ -53,7 +53,8 @@ de muestra en el sitio público). El admin sí requiere Supabase real.
 
 ## Decisiones de diseño
 
-- Paleta oscura cálida: fondo espresso (`--color-bg`), crema (`--color-cream`), acento dorado (`--color-accent`)
+- Paleta rosa claro por pedido de Agustina: fondo rosado (`--color-bg`), texto ciruela (`--color-cream`), acento rosa intenso (`--color-accent`); modo oscuro opcional en tonos rosados
+- Orden público y menú: Inicio → Demos (audio) → Videos (Mis demos) → Trabajos → Sobre mí → Contacto. Los videos existentes siguen en `videos`; los trabajos se cargan aparte en `works` (`0003_works.sql`, `/admin/trabajos`)
 - Tipografías: Fraunces (display, serif) + Sora (UI, sans) vía `next/font`
 - Un solo elemento `<audio>` global (`components/player/GlobalAudio.tsx`); los waveforms de las cards
   son superficie de visualización/seek, nunca reproducen audio por sí mismos

@@ -4,6 +4,7 @@ import { useLenis } from "lenis/react";
 import { ChevronDown, Pause, Play, Radio } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { siteConfig } from "@/lib/site-config";
 import type { PublicDemo } from "@/lib/types";
@@ -85,8 +86,8 @@ function HeroDemoPanel({ demo }: { demo?: PublicDemo }) {
         animate={reduced ? undefined : { rotate: [-3, 2, -3], scale: [1, 1.03, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-cream/10 bg-surface/80 p-5 shadow-[0_30px_120px_-45px_rgb(184_131_46/0.35)] backdrop-blur-xl sm:p-6 dark:shadow-[0_30px_120px_-45px_rgba(217,161,84,0.65)]">
-        <div className="absolute inset-0 bg-[linear-gradient(125deg,rgb(184_131_46/0.06),transparent_42%,rgb(184_131_46/0.10))] dark:bg-[linear-gradient(125deg,rgba(244,237,227,0.08),transparent_42%,rgba(217,161,84,0.16))]" />
+      <div className="relative overflow-hidden rounded-[1.75rem] border border-cream/10 bg-surface/80 p-5 shadow-2xl shadow-accent/20 backdrop-blur-xl sm:p-6">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent/10" />
         <div className="relative flex items-center justify-between gap-4">
           <span className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
             <Radio size={14} />
@@ -97,7 +98,23 @@ function HeroDemoPanel({ demo }: { demo?: PublicDemo }) {
           </span>
         </div>
 
-        <div className="relative mt-8">
+        <div className="relative mt-6 flex items-center gap-4 border-b border-cream/10 pb-5">
+          <Image
+            src={siteConfig.portrait.src}
+            alt={siteConfig.portrait.alt}
+            width={96}
+            height={96}
+            priority
+            unoptimized
+            className="h-24 w-24 shrink-0 rounded-2xl border border-accent/20 object-cover"
+          />
+          <div className="min-w-0">
+            <p className="font-display text-xl font-medium text-cream">{siteConfig.name}</p>
+            <p className="mt-1 text-sm text-muted">{siteConfig.role}</p>
+          </div>
+        </div>
+
+        <div className="relative mt-5">
           <p className="text-xs uppercase tracking-[0.24em] text-muted">
             {demo?.categoryName ?? "Demo"}
           </p>
@@ -142,7 +159,7 @@ function HeroDemoPanel({ demo }: { demo?: PublicDemo }) {
             disabled={!demo}
             whileTap={{ scale: 0.92 }}
             aria-label={isActive && isPlaying ? "Pausar reel destacado" : "Reproducir reel destacado"}
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-bg shadow-[0_0_34px_rgba(217,161,84,0.35)] transition-colors hover:bg-accent-strong disabled:opacity-60"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-bg shadow-lg shadow-accent/25 transition-colors hover:bg-accent-strong disabled:opacity-60"
           >
             {isActive && isPlaying ? (
               <Pause size={21} fill="currentColor" />
@@ -189,15 +206,16 @@ export default function Hero({ featuredDemos }: { featuredDemos: PublicDemo[] })
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [0, 120]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], reduced ? [1, 1] : [1, 0]);
 
   const titleWords = siteConfig.tagline.split(" ");
 
   function goToDemos() {
     const el = document.getElementById("demos");
     if (!el) return;
-    if (lenis) lenis.scrollTo(el, { offset: -72, duration: 1.4 });
+    if (reduced) el.scrollIntoView({ behavior: "instant" });
+    else if (lenis) lenis.scrollTo(el, { offset: -72, duration: 1.4 });
     else el.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -213,7 +231,7 @@ export default function Hero({ featuredDemos }: { featuredDemos: PublicDemo[] })
       />
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgb(184_131_46/0.06),transparent_48%),linear-gradient(180deg,rgb(26_23_20/0.04)_0%,rgb(26_23_20/0.12)_94%)] dark:bg-[radial-gradient(ellipse_at_50%_0%,rgba(217,161,84,0.08),transparent_48%),linear-gradient(180deg,rgba(14,12,9,0.18)_0%,rgba(14,12,9,0.55)_94%)]"
+        className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent"
       />
       <motion.div
         aria-hidden
@@ -225,7 +243,7 @@ export default function Hero({ featuredDemos }: { featuredDemos: PublicDemo[] })
       <WaveformBackdrop dense />
 
       <motion.div
-        style={reduced ? undefined : { y, opacity }}
+        style={{ y, opacity }}
         className="section-container relative z-10 grid items-center gap-12 pb-24 pt-28 lg:grid-cols-[1.1fr_0.9fr]"
       >
         <div>
@@ -276,7 +294,7 @@ export default function Hero({ featuredDemos }: { featuredDemos: PublicDemo[] })
           >
             <MagneticButton
               onClick={goToDemos}
-              className="rounded-full bg-accent px-8 py-4 text-base font-semibold text-bg shadow-[0_0_44px_rgba(217,161,84,0.22)] transition-colors hover:bg-accent-strong"
+              className="rounded-full bg-accent px-8 py-4 text-base font-semibold text-bg shadow-xl shadow-accent/20 transition-colors hover:bg-accent-strong"
             >
               Escuchá mis demos
             </MagneticButton>

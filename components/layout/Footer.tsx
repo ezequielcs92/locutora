@@ -8,7 +8,7 @@ export default function Footer() {
         <p>
           © {new Date().getFullYear()} {siteConfig.name} — {siteConfig.role}
         </p>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
           {siteConfig.socials.map((social) => (
             <a
               key={social.name}

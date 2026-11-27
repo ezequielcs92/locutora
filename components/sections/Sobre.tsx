@@ -21,8 +21,8 @@ export default function Sobre() {
             className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl border border-cream/10 bg-surface"
           >
             <Image
-              src="/images/agustina-vidal.jpg"
-              alt={`${siteConfig.name} en el estudio de Fox Sports`}
+              src={siteConfig.portrait.src}
+              alt={siteConfig.portrait.alt}
               fill
               unoptimized
               sizes="(max-width: 1024px) 100vw, 40vw"

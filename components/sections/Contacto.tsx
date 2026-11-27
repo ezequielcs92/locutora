@@ -205,13 +205,13 @@ export default function Contacto() {
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent transition-transform group-hover:scale-110">
                 <Mail size={24} />
               </span>
-              <span>
-                <span className="block font-semibold text-cream">{siteConfig.email}</span>
+              <span className="min-w-0">
+                <span className="block break-words font-semibold text-cream">{siteConfig.email}</span>
                 <span className="block text-sm text-muted">Para propuestas y presupuestos</span>
               </span>
             </a>
 
-            <div className="mt-2 flex items-center gap-3">
+            <div className="mt-2 flex flex-wrap items-center gap-3">
               <span className="text-sm text-muted">Seguime en</span>
               {siteConfig.socials.map((social) => (
                 <a
